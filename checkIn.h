@@ -15,6 +15,6 @@ void checkInNew ();
 void checkInReturn ();
 void DotSlash ();
 void studentType ();
-void checkRecords ();
+void checkRecords (string, int*, int*);
 
 #endif
