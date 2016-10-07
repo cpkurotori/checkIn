@@ -63,9 +63,9 @@ void Person::assignUser (string us)
 
 void Person::push ()
 {
-	cout << "Reallocating space for info of size " << info.size() << endl;
+	//cout << "Reallocating space for info of size " << info.size() << endl;
 	info.resize(info.size()+1);
-	cout << "Allocated." << endl;
+	//cout << "Allocated." << endl;
 }
 
 void Person:: push (int size)
@@ -90,13 +90,13 @@ void checkInNew (vector<Person>& p)
 	cout << "Username (choose a username - case sensitive): ";
 	cin >> us;
 	identical = true;
-	cout << "3" << endl;
+	//cout << "3" << endl;
 		for (int i = 0; i < p.size(); i++)
 		{
 			string test;
-			cout << "1" << endl;
+			//cout << "1" << endl;
 			test = p[i].findElement(2);
-			cout << "2" << endl;
+			//cout << "2" << endl;
 			if (us == test)
 			{
 				cout << "That username is already taken!" << endl;
@@ -119,6 +119,8 @@ void checkInNew (vector<Person>& p)
 	p[v_size].assignEmail(em);
 	p[v_size].assignPhone(ph);
 	p[v_size].assignInfo("X", p[v_size].countInfo() - 1);
+	cout << endl << endl << endl;
+	cout << "Thank you, " << p[v_size].findElement(0) << "! You're checked in!" << endl;
 }
 
 int Person::countInfo ()
@@ -143,7 +145,7 @@ void checkInReturn (vector <Person>& p)
 
 			p[i].assignInfo("X", p[i].countInfo()-1);
 			cout << endl << endl << endl;
-			cout << "Thank you, " << p[i].findElement(1) << "! You're checked in!" << endl;
+			cout << "Thank you, " << p[i].findElement(0) << "! You're checked in!" << endl;
 			return;
 		}
 	}
@@ -163,11 +165,21 @@ void DotSlash ()
 	cout << "*   ||__//  ||__||    ||        ____|| ||__ ||   ||  ____|| ||   ||  *" << endl;
 	cout << "*                                                                    *" << endl;
 	cout << "*   C   O   M   P   U   T   E   R         S   C   I   E   N   C   E  *" << endl;
-	cout << "**********************************************************************" << endl;}
+	cout << "**********************************************************************" << endl;
+	cout << endl << endl << endl << endl << endl;
+	}
 
-bool openFile (fstream& file, const char* fname)
+bool openFileRead (ifstream& file, const char* fname)
 {
-	file.open(fname);
+	file.open (fname);
+	if (!file)
+		return false;
+	else
+		return true;}
+
+bool openFileWrite (ofstream& file, const char* fname)
+{
+	file.open (fname);
 	if (!file)
 		return false;
 	else
@@ -180,19 +192,24 @@ void studentType (vector<Person>& v)
 	string choice;
 	do{
 		cout << "\n\n\n\n\n\n\n\n";
-		cout << setw (73) << setfill ('*') << "\n";
-		cout << setw (73) << setfill ('*') << "\n";
-		cout << setw (73) << setfill ('*') << "\n";
-		cout << setw (73) << setfill ('*') << "\n";
+		cout << setw (73) << setfill ('/') << "\n";
+		cout << setw (73) << setfill ('\\') << "\n";
+		cout << setw (73) << setfill ('/') << "\n";
+		cout << setw (73) << setfill ('\\') << "\n";
 
-		cout << "\n\n\n";
+		cout << "\n\n\n\n\n\n\n";
 		DotSlash ();
-		cout << endl << endl;
+		cout << "\n\n";
+		cout << setw (73) << setfill ('/') << "\n";
+		cout << setw (73) << setfill ('\\') << "\n";
+		cout << setw (73) << setfill ('/') << "\n";
+		cout << setw (73) << setfill ('\\') << "\n";
+		cout << "\n\n\n\n\n\n\n\n";
 		do
 		{
 		cout << "Please select if you are a new member or a returning member:" << endl;
 		cout << "\t1 - New" << endl;
-		cout << "\t2 - Returning" << endl;
+		cout << "\t2 - Returning" << endl << endl << endl << endl << endl;
 			if (cin.fail())
 			{
 				cin.clear ();
@@ -231,13 +248,13 @@ string Person::findElement (int index)
 	return info[index];
 }
 
-bool initVector (fstream& file, vector<Person>& v)
+bool initVector (ifstream& file, vector<Person>& v)
 {
 	file.clear ();
 	file.seekg (0, ios::beg);
 	string row;
 	int pos;
-	cout << "Testing first line..." << endl;
+	//cout << "Testing first line..." << endl;
 	getline (file, row);
 	if (file.fail())
 	{
@@ -246,7 +263,7 @@ bool initVector (fstream& file, vector<Person>& v)
 		{
 			v[0].push();
 		}
-		cout << "First line none... adding data." << endl;
+		//cout << "First line none... adding data." << endl;
 		v[0].assignFirst("First");
 		v[0].assignLast("Last");
 		v[0].assignUser("User");
@@ -257,7 +274,7 @@ bool initVector (fstream& file, vector<Person>& v)
 	}
 	else
 	{
-		cout <<"Values in first line valid..." << endl;
+		//cout <<"Values in first line valid..." << endl;
 		file.clear ();
 		file.seekg (0, ios::beg);
 		int startpos = 0;
@@ -265,10 +282,10 @@ bool initVector (fstream& file, vector<Person>& v)
 		int i = 0;
 		int j = 0;
 		getline (file, row);
-		cout << "First row taken..." << endl;
+		//cout << "First row taken..." << endl;
 		while (!file.fail())
 		{
-			cout << "New row..." << endl;
+			//cout << "New row..." << endl;
 			if (i!=0)
 			{
 				v.resize(v.size()+1);
@@ -283,14 +300,14 @@ bool initVector (fstream& file, vector<Person>& v)
 				}
 				else
 				{
-					cout << "Finding delim ','" << endl;
+					//cout << "Finding delim ','" << endl;
 					string substring;
 					substring = row.substr (startpos, pos-startpos);
-					cout << "Substring: " << substring << endl;
+					//cout << "Substring: " << substring << endl;
 					//if (v[i].countInfo()>1)
 					//	v[i].push();
-					cout << "info size of v[" << i << "]: " << v[i].countInfo() << endl;
-					cout << "debug: countinfo = " << v[i].countInfo() << endl;
+					//cout << "info size of v[" << i << "]: " << v[i].countInfo() << endl;
+					//cout << "debug: countinfo = " << v[i].countInfo() << endl;
 					if (i==0)
 					{
 						v[i].assignInfo(substring, v[i].countInfo()-1);
@@ -305,24 +322,25 @@ bool initVector (fstream& file, vector<Person>& v)
 					j++;
 				}
 			}
-			cout << "Reallocating vector size..." << endl;
+			//cout << "Reallocating vector size..." << endl;
 
 			i++;
 			j=0;
 			startpos = 0;
 			getline (file, row);
-			cout << "Next row taken..." << endl;
+			//cout << "Next row taken..." << endl;
 			pos = 0;
 		}
 	}
 	return false;
 }
 
-void exportClose (fstream & file, vector<Person>& v)
+void exportClose (ofstream& file, vector<Person>& v)
 {
+	cout << "Exporting data to file..." << endl;
 	for (int i = 0; i < v.size(); i++)
 	{
-		for (int j =0; j < v[i].countInfo(); j++)
+		for (int j = 0; j < v[i].countInfo(); j++)
 		{
 			if (j!=0)
 			{
@@ -332,6 +350,7 @@ void exportClose (fstream & file, vector<Person>& v)
 		}
 		file << "\n";
 	}
+	cout << "Closing file..." << endl;
 	file.close();
 }
 

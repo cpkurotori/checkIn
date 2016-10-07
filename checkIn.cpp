@@ -10,41 +10,50 @@ int main (int argc, char* argv[])
 	cout << "What is today's date entry: ";
 	string date;
 	cin >> date;
-	fstream file;
-	bool opened = openFile(file, argv [1]);
+	ifstream infile;
+	ofstream outfile;
+	bool opened = openFileRead(infile, argv [1]);
 	if (!opened)
 	{
-		file.open (argv [1], fstream::out);
+		outfile.open (argv [1]);
+		outfile.close ();
 		cout << "File created." << endl;
+		infile.open (argv[1]);
+
 	}
 	vector<Person> roster;
 	roster.resize(1);
+	bool nofile;
 	cout << "Initializing vector for roster..." << endl;
-	bool nofile = initVector (file, roster); //puts all the data in file into roster vector
-	for (int i = 0; i < roster.size(); i++)
-	{
-		cout << "Name element of roster[" << i << "] = " << roster[i].findElement (0) << endl;
-	}
+	nofile = initVector (infile, roster); //puts all the data in file into roster vector
+	//for (int i = 0; i < roster.size(); i++)
+	//{
+	//	cout << "Name element of roster[" << i << "] = " << roster[i].findElement (0) << endl;
+	//}
 	if (!nofile)
 		roster[0].push();
+	if (infile.is_open())
+		infile.close();
+	if (outfile.is_open())
+		outfile.close();
 	roster[0].assignInfo(date,roster[0].countInfo()-1);
 	for (int i = 1; i < roster.size(); i++)
 	{
 		roster[i].push(roster[0].countInfo());
 		roster[i].assignInfo(" ",roster[i].countInfo()-1);
 	}
-	for (int j = 0; j < roster.size(); j++)
-	{
-		for (int i = 0; i < roster[j].countInfo(); i++)
-		{
-			cout << roster[j].findElement(i) << endl;
-		}
-		cout << "Next roster position..." << endl;
-	}
+	//for (int j = 0; j < roster.size(); j++)
+	//{
+	//	for (int i = 0; i < roster[j].countInfo(); i++)
+	//	{
+	//		cout << roster[j].findElement(i) << endl;
+	//	}
+	//	cout << "Next roster position..." << endl;
+	//}
+	cout << string (100, '\n');
 	studentType (roster);
-	file.close();
-	file.open(argv[1], ios::trunc);
-	exportClose(file, roster);
+	opened = openFileWrite (outfile, argv[1]);
+	exportClose (outfile, roster);
 	//studentType (); //calls studentType function that asks the user if they are new or returning (hidden option Q for admin to quit program)
 	return 0;
 }
