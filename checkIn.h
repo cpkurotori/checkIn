@@ -90,8 +90,9 @@ void checkInNew (vector<Person>& p)
 	cout << "Username (choose a username - case sensitive): ";
 	cin >> us;
 	identical = true;
+	int p_size = p.size ();
 	//cout << "3" << endl;
-		for (int i = 0; i < p.size(); i++)
+		for (int i = 0; i < p_size; i++)
 		{
 			string test;
 			//cout << "1" << endl;
@@ -136,10 +137,11 @@ void checkInReturn (vector <Person>& p)
 	string us;
 	cout << "Check-in with your username (case-sensitive): ";
 	cin >> us;
-	cout << "Your username is:" << us << us<< endl;
-	for (int i = 0; i < p.size(); i++)
+	int p_size = p.size();
+	//cout << "Your username is:" << us << us<< endl;
+	for (int i = 0; i < p_size; i++)
 	{
-		cout << "test against: " << p[i].findElement(2) << endl;		
+		//cout << "test against: " << p[i].findElement(2) << endl;		
 		if (p[i].findElement(2) == us)
 		{
 
@@ -191,7 +193,7 @@ void studentType (vector<Person>& v)
 {
 	string choice;
 	do{
-		cout << "\n\n\n\n\n\n\n\n";
+		cout << "\n\n\n";
 		cout << setw (73) << setfill ('/') << "\n";
 		cout << setw (73) << setfill ('\\') << "\n";
 		cout << setw (73) << setfill ('/') << "\n";
@@ -337,10 +339,12 @@ bool initVector (ifstream& file, vector<Person>& v)
 
 void exportClose (ofstream& file, vector<Person>& v)
 {
+	int v_size = v.size();
 	cout << "Exporting data to file..." << endl;
-	for (int i = 0; i < v.size(); i++)
+	for (int i = 0; i < v_size; i++)
 	{
-		for (int j = 0; j < v[i].countInfo(); j++)
+		int v_info_size = v[i].countInfo ();
+		for (int j = 0; j < v_info_size; j++)
 		{
 			if (j!=0)
 			{

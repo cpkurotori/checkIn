@@ -2,23 +2,92 @@
 
 int main (int argc, char* argv[])
 {
-	if(argc < 2)
+	string f_string;
+	const char* file_name;
+	string date, term, notes;
+	int day, month, year;
+	do
 	{
-		cout << "Please indicate a roster file to pull from/create." << endl << endl;
-		exit (EXIT_FAILURE);
+	if (cin.fail())
+	{
+		cin.clear();
+		cin.ignore(256,'\n');
 	}
-	cout << "What is today's date entry: ";
-	string date;
-	cin >> date;
+	cout << "Month: ";
+	cin >> month;
+	if ((month < 1) | (month > 12) | cin.fail())
+		cout << endl << "ERROR: Please enter a valid month (of integer type)!" << endl << endl;
+	}
+	while ((month < 1) | (month > 12) | cin.fail());
+	do
+	{
+	if (cin.fail())
+	{
+		cin.clear();
+		cin.ignore(256,'\n');
+	}
+	cout << "Day: ";
+	cin >> day;
+	if ((day < 1) | (day > 31) | cin.fail())
+		cout << endl << "ERROR: Please enter a valid day (of integer type)!" << endl << endl;
+	}
+	while ((day < 1) | (day > 31) | cin.fail());
+	do
+	{
+	if (cin.fail())
+	{
+		cin.clear();
+		cin.ignore(256,'\n');
+	}
+	cout << "Year: ";
+	cin >> year;
+	if ((year < 2016) | (year > 3000)| cin.fail())
+		cout << endl << "ERROR: Please enter a valid year (of integer type)!" << endl << endl;
+	}
+	while ((year < 2016) | (year > 3000) | cin.fail());
+	if(argc == 2)
+	{
+	file_name = argv[1];
+	}
+	else
+	{
+		do
+		{
+			if (cin.fail())
+			{
+				cin.clear();
+				cin.ignore(256,'\n');
+			}
+			cout << "What term is it (Fall/Spring/Summer): ";
+			cin >> term;
+			if ((term!= "Fall") && (term!= "Summer") && (term != "Spring"))
+			{
+				cout << endl << "ERROR: Please enter a valid term!" << endl << endl;
+			}
+		}
+		while ((term!= "Fall") && (term!= "Summer") && (term != "Spring"));
+	f_string = term + to_string(year) + ".csv";
+	file_name = f_string.c_str();
+	}
+	string s_year = to_string(year);
+	//cout << s_year[0];
+	cout << "Do you have any special notes for today? (if none press return):" << endl;
+	cin.clear();
+	cin.ignore (256, '\n');
+	getline (cin, notes);
+	date = to_string(month)+'/'+to_string(day)+'/'+s_year[2] + s_year[3];
+	if (!notes.empty())
+		date = date +'('+notes+')';
+	cout << date;
 	ifstream infile;
 	ofstream outfile;
-	bool opened = openFileRead(infile, argv [1]);
+	bool opened = openFileRead(infile, file_name);
 	if (!opened)
 	{
-		outfile.open (argv [1]);
+		outfile.open (file_name);
 		outfile.close ();
 		cout << "File created." << endl;
-		infile.open (argv[1]);
+		infile.open (file_name);
 
 	}
 	vector<Person> roster;
@@ -37,7 +106,8 @@ int main (int argc, char* argv[])
 	if (outfile.is_open())
 		outfile.close();
 	roster[0].assignInfo(date,roster[0].countInfo()-1);
-	for (int i = 1; i < roster.size(); i++)
+	int roster_size = roster.size();
+	for (int i = 1; i < roster_size; i++)
 	{
 		roster[i].push(roster[0].countInfo());
 		roster[i].assignInfo(" ",roster[i].countInfo()-1);
@@ -50,9 +120,9 @@ int main (int argc, char* argv[])
 	//	}
 	//	cout << "Next roster position..." << endl;
 	//}
-	cout << string (100, '\n');
+	cout << string (40, '\n');
 	studentType (roster);
-	opened = openFileWrite (outfile, argv[1]);
+	opened = openFileWrite (outfile, file_name);
 	exportClose (outfile, roster);
 	//studentType (); //calls studentType function that asks the user if they are new or returning (hidden option Q for admin to quit program)
 	return 0;
