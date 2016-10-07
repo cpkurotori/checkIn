@@ -73,6 +73,72 @@ void Person:: push (int size)
 	info.resize (size);
 }
 
+void updateInfo(vector<Person>& v)
+{
+	cin.clear();
+	cin.ignore(256, '\n');
+	int choice, index;
+	string fn, ln, us, em, ph;
+	bool found = false;
+	int v_size = v.size();
+	while (!found)
+	{
+		cout << "Enter your First Name (Enter \"Quit\" to got back to main menu) : ";
+		getline(cin, fn);
+		if (fn == "Quit")
+		{
+			return;
+		}
+		cout << "Enter your Last Name: ";
+		getline(cin, ln);
+		for (int i = 0; i < v_size; i++)
+		{
+			if ((v[i].findElement(0) == fn) && (v[i].findElement(1) == ln))
+			{
+				index = i;
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			cout << endl << "ERROR: The combination of the First Name (\"" << fn << "\") and Last Name (\"" << ln << "\") you entered could not be found." << endl;
+			cout << "Make sure you entered your first name correctly, or register as a \"New\" club member." << endl << endl;
+		}
+	}
+	do
+	{
+		do
+		{
+			if (cin.fail())
+			{
+				cin.clear();
+				cin.ignore(256, '\n');
+			}
+			cout << "What information would you like to update?" << endl;
+			cout << "\t1\t-\t Username" << endl;
+			cout << "\t2\t-\t Email (does not change newsletter subscription)" << endl;
+			cout << "\t3\t-\t Phone Number" << endl;
+			cout << "\t4\t-\t Exit to main menu" << endl << endl;
+			cout << "Enter you choice: ";
+			cin >> choice;
+			if ((choice < 1) || (choice > 4) || cin.fail())
+			{
+				cout << endl << "ERROR: Please enter a valid option." << endl << endl;
+			}
+		} while ((choice < 1) || (choice > 4) || cin.fail());
+		if (choice == 4)
+			return;
+		cout << "New " << v[0].findElement(choice + 1) << " for " << v[index].findElement(0) << " " << v[index].findElement(1) << ":\t";
+		string update;
+		cin.clear();
+		cin.ignore(256, '\n');
+		getline(cin, update);
+		cout << "Assigning it to index + 1 : " << choice + 1 << endl;
+		v[index].assignInfo(update, choice + 1);
+	} while (choice != 4);
+}
+
 void checkInNew (vector<Person>& p)
 {
 	cin.clear();
@@ -128,7 +194,6 @@ int Person::countInfo ()
 {
 	return info.size();
 }
-
 
 void checkInReturn (vector <Person>& p)
 {
@@ -186,9 +251,11 @@ bool openFileWrite (ofstream& file, const char* fname)
 		return false;
 	else
 		return true;}
+
 // function void studentType () pseudo-clear screen, creates Dot-Slash banner, asks if use is new or returning, depending on selected option, calls the corresponsing function (checkInNew () or checkInReturn ())
 //hidden option "Q" to quit the program
 //program continues to run until admin types "Q"
+
 void studentType (vector<Person>& v)
 {
 	string choice;
@@ -209,21 +276,17 @@ void studentType (vector<Person>& v)
 		cout << "\n\n\n\n\n\n\n\n";
 		do
 		{
-		cout << "Please select if you are a new member or a returning member:" << endl;
-		cout << "\t1 - New" << endl;
-		cout << "\t2 - Returning" << endl << endl << endl << endl << endl;
-			if (cin.fail())
-			{
-				cin.clear ();
-				cin.ignore (256,'\n');
-			}
-			cin >> choice;
-			if (choice != "1"&& choice != "2" && choice != "Q" && !cin.fail())
+		cout << "Please select an option" << endl;
+		cout << "\t1 - New member check-in" << endl;
+		cout << "\t2 - Returning member check-in" << endl;
+		cout << "\t3 - Returning member update info" << endl << endl << endl << endl;
+		cin >> choice;
+		if (choice != "1"&& choice != "2" && choice != "3" && choice != "Q")
 			{
 				cout << "ERROR: Please enter a valid option (1 or 2)" << endl << endl;
 			}
 		}
-		while (choice != "1" && choice != "2" && choice != "Q" && !cin.fail());
+		while (choice != "1" && choice != "2" && choice != "3" && choice != "Q");
 		if (choice == "1")
 		{
 			checkInNew (v);
@@ -232,9 +295,13 @@ void studentType (vector<Person>& v)
 		{
 			checkInReturn (v);
 		}
+		else if (choice == "3")
+		{
+			updateInfo(v);
+		}
 		else if (choice == "Q")
 		{
-			break;
+			return;
 		}
 	}
 	while (choice !="Q");}
@@ -266,11 +333,11 @@ bool initVector (ifstream& file, vector<Person>& v)
 			v[0].push();
 		}
 		//cout << "First line none... adding data." << endl;
-		v[0].assignFirst("First");
-		v[0].assignLast("Last");
-		v[0].assignUser("User");
-		v[0].assignEmail("Email");
-		v[0].assignPhone("Phone");
+		v[0].assignFirst("First Name");
+		v[0].assignLast("Last Name");
+		v[0].assignUser("Username");
+		v[0].assignEmail("Email Address");
+		v[0].assignPhone("Phone Number");
 
 		return true;
 	}
@@ -357,5 +424,7 @@ void exportClose (ofstream& file, vector<Person>& v)
 	cout << "Closing file..." << endl;
 	file.close();
 }
+
+
 
 #endif
