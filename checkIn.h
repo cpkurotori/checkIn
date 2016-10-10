@@ -73,6 +73,11 @@ void Person:: push (int size)
 	info.resize (size);
 }
 
+int Person::countInfo()
+{
+	return info.size();
+}
+
 void updateInfo(vector<Person>& v)
 {
 	cin.clear();
@@ -139,14 +144,14 @@ void updateInfo(vector<Person>& v)
 	} while (choice != 4);
 }
 
-void checkInNew (vector<Person>& p)
+void checkInNew (vector<Person>& p, int index)
 {
 	cin.clear();
 	cin.ignore (256, '\n');
 	string fn, ln, us, em, ph;
 	cout << endl << endl << endl << endl;
 	cout << "Please fill in the following information:" << endl;
-	cout << "First Name: ";
+	cout << "First Name (enter \"Quit\" to exit to main menu): ";
 	getline (cin, fn);
 	cout << "Last Name: ";
 	getline (cin, ln);
@@ -185,39 +190,44 @@ void checkInNew (vector<Person>& p)
 	p[v_size].assignUser(us);
 	p[v_size].assignEmail(em);
 	p[v_size].assignPhone(ph);
-	p[v_size].assignInfo("X", p[v_size].countInfo() - 1);
+	p[v_size].assignInfo("X", index);
 	cout << endl << endl << endl;
 	cout << "Thank you, " << p[v_size].findElement(0) << "! You're checked in!" << endl;
 }
 
-int Person::countInfo ()
+void checkInReturn (vector <Person>& p, int index)
 {
-	return info.size();
-}
-
-void checkInReturn (vector <Person>& p)
-{
-	cin.clear();
-	cin.ignore (256, '\n');
-	string us;
-	cout << "Check-in with your username (case-sensitive): ";
-	cin >> us;
-	int p_size = p.size();
-	//cout << "Your username is:" << us << us<< endl;
-	for (int i = 0; i < p_size; i++)
+	bool found;
+	do
 	{
-		//cout << "test against: " << p[i].findElement(2) << endl;		
-		if (p[i].findElement(2) == us)
-		{
-
-			p[i].assignInfo("X", p[i].countInfo()-1);
-			cout << endl << endl << endl;
-			cout << "Thank you, " << p[i].findElement(0) << "! You're checked in!" << endl;
+		cin.clear();
+		cin.ignore(256, '\n');
+		string us;
+		found = false;
+		cout << "Check-in with your username (case-sensitive) or type \"Quit\" to exit to main menu: ";
+		cin >> us;
+		if (us == "Quit")
 			return;
-		}
-	}
+		int p_size = p.size();
+		//cout << "Your username is:" << us << us<< endl;
+		for (int i = 0; i < p_size; i++)
+		{
+			//cout << "test against: " << p[i].findElement(2) << endl;		
+			if (p[i].findElement(2) == us)
+			{
 
-	cout << endl << endl << endl << "Username could not be found. Please try again." << endl;
+				p[i].assignInfo("X", index);
+				cout << endl << endl << endl;
+				cout << "Thank you, " << p[i].findElement(0) << "! You're checked in!" << endl;
+				found = true;
+				return;
+			}
+		}
+		if (!found)
+		{
+			cout << endl << endl << endl << "Username could not be found. Please try again." << endl << endl;
+		}
+	} while (!found);
 	return;
 
 }
@@ -256,7 +266,7 @@ bool openFileWrite (ofstream& file, const char* fname)
 //hidden option "Q" to quit the program
 //program continues to run until admin types "Q"
 
-void studentType (vector<Person>& v)
+void studentType (vector<Person>& v, int index)
 {
 	string choice;
 	do{
@@ -289,11 +299,11 @@ void studentType (vector<Person>& v)
 		while (choice != "1" && choice != "2" && choice != "3" && choice != "Q");
 		if (choice == "1")
 		{
-			checkInNew (v);
+			checkInNew (v, index);
 		}
 		else if (choice == "2")
 		{
-			checkInReturn (v);
+			checkInReturn (v, index);
 		}
 		else if (choice == "3")
 		{
@@ -316,7 +326,7 @@ string Person::findElement (int index)
 {
 	return info[index];
 }
-
+// takes information from the file and puts it into the roster vector
 bool initVector (ifstream& file, vector<Person>& v)
 {
 	file.clear ();
@@ -325,13 +335,9 @@ bool initVector (ifstream& file, vector<Person>& v)
 	int pos;
 	//cout << "Testing first line..." << endl;
 	getline (file, row);
-	if (file.fail())
+	if (file.fail()) //if the file is blank make the starting titles
 	{
-		v.resize(1);
-		for (int i = 0; i < 5; i++)
-		{
-			v[0].push();
-		}
+		v[0].push(5);
 		//cout << "First line none... adding data." << endl;
 		v[0].assignFirst("First Name");
 		v[0].assignLast("Last Name");
@@ -339,12 +345,12 @@ bool initVector (ifstream& file, vector<Person>& v)
 		v[0].assignEmail("Email Address");
 		v[0].assignPhone("Phone Number");
 
-		return true;
+		return true; //exits initVector and returns the value of true to the bool variable
 	}
 	else
 	{
 		//cout <<"Values in first line valid..." << endl;
-		file.clear ();
+		file.clear (); //bring pointer to the beginning
 		file.seekg (0, ios::beg);
 		int startpos = 0;
 		pos = 0;
@@ -352,22 +358,22 @@ bool initVector (ifstream& file, vector<Person>& v)
 		int j = 0;
 		getline (file, row);
 		//cout << "First row taken..." << endl;
-		while (!file.fail())
+		while (!file.fail()) //go until file is at the end
 		{
 			//cout << "New row..." << endl;
-			if (i!=0)
+			if (i!=0) 
 			{
-				v.resize(v.size()+1);
-				v[i].push(v[0].countInfo());
+				v.resize(v.size()+1); //since v already has an initialized size of 1, we skip resizing for the first index 0
+				v[i].push(v[0].countInfo()); //after creating another v element, we must create a vector the same size of the 0 index for the info vector
 			}
-			while (pos!=-1)
+			while (pos!=-1) //testing against EOL
 			{
-				pos = row.find (',', startpos);
-				if (pos == -1)
+				pos = row.find (',', startpos); //finds "," in the row; returns -1 if EOL
+				if (pos == -1) //this is for the very last term (after the last ,)
 				{
 					v[i].assignInfo(row.substr(startpos), v[i].countInfo()-1);			
 				}
-				else
+				else //
 				{
 					//cout << "Finding delim ','" << endl;
 					string substring;
@@ -377,16 +383,18 @@ bool initVector (ifstream& file, vector<Person>& v)
 					//	v[i].push();
 					//cout << "info size of v[" << i << "]: " << v[i].countInfo() << endl;
 					//cout << "debug: countinfo = " << v[i].countInfo() << endl;
+					/*
 					if (i==0)
 					{
-						v[i].assignInfo(substring, v[i].countInfo()-1);
+						v[0].assignInfo(substring, v[0].countInfo()-1);
 					}
 					else
 					{
-						v[i].assignInfo(substring, j);
-					}
+					*/
+					v[i].assignInfo(substring, j);
+					//}
 					startpos = pos + 1;
-					if (i==0)
+					if (i==0) //for the title element in the roster, creates a new column for it
 						v[i].push();
 					j++;
 				}

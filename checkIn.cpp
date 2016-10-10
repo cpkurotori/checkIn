@@ -78,7 +78,7 @@ int main (int argc, char* argv[])
 	date = to_string(month)+'/'+to_string(day)+'/'+s_year[2] + s_year[3];
 	if (!notes.empty())
 		date = date +'('+notes+')';
-	cout << date;
+	//cout << date;
 	ifstream infile;
 	ofstream outfile;
 	bool opened = openFileRead(infile, file_name);
@@ -91,7 +91,7 @@ int main (int argc, char* argv[])
 
 	}
 	vector<Person> roster;
-	roster.resize(1);
+	roster.resize(1); //creates the first element for roster (i.e. the title element)
 	bool nofile;
 	cout << "Initializing vector for roster..." << endl;
 	nofile = initVector (infile, roster); //puts all the data in file into roster vector
@@ -99,29 +99,36 @@ int main (int argc, char* argv[])
 	//{
 	//	cout << "Name element of roster[" << i << "] = " << roster[i].findElement (0) << endl;
 	//}
-	if (!nofile)
-		roster[0].push();
 	if (infile.is_open())
 		infile.close();
 	if (outfile.is_open())
 		outfile.close();
-	roster[0].assignInfo(date,roster[0].countInfo()-1);
-	int roster_size = roster.size();
-	for (int i = 1; i < roster_size; i++)
+	//test if the date is a duplicate and if it isn't add and element to the info of title element, if it is, don't and use the index of the date to assign "X" to that element for people that check in
+	bool identicalDay = false;
+	int date_index;
+	int roster_size = roster.size ();
+	for (int i = 0; i < roster.size(); i++) //tests if there is an identical date already in the title element; if there is return true and log the index of it into date_index, if not identicalDate will stay false
 	{
-		roster[i].push(roster[0].countInfo());
-		roster[i].assignInfo(" ",roster[i].countInfo()-1);
+		if (roster[0].findElement(i) == date)
+		{
+			identicalDay = true;
+			date_index = i;
+			break;
+		}
 	}
-	//for (int j = 0; j < roster.size(); j++)
-	//{
-	//	for (int i = 0; i < roster[j].countInfo(); i++)
-	//	{
-	//		cout << roster[j].findElement(i) << endl;
-	//	}
-	//	cout << "Next roster position..." << endl;
-	//}
-	cout << string (40, '\n');
-	studentType (roster);
+	if (!identicalDay)
+	{
+		roster[0].push(); //adds element to info vector of title element
+		roster[0].assignInfo(date, roster[0].countInfo() - 1); //assigns date value to the just created element in info
+		date_index = roster[0].countInfo() - 1;
+		for (int i = 1; i < roster_size; i++) //assigns blank element to the new date element index in every roster position (after the title element)
+		{
+			roster[i].push(roster[0].countInfo());
+			roster[i].assignInfo(" ", roster[i].countInfo() - 1);
+		}
+	}
+	cout << string(40, '\n');
+	studentType (roster, date_index); //pass the roster and date index to the student type function
 	opened = openFileWrite (outfile, file_name);
 	exportClose (outfile, roster);
 	//studentType (); //calls studentType function that asks the user if they are new or returning (hidden option Q for admin to quit program)
