@@ -78,6 +78,16 @@ int Person::countInfo()
 	return info.size();
 }
 
+void Person::assignInfo (string pinfo, int position)
+{
+	info[position] = pinfo;
+}
+
+ 
+string Person::findElement (int index)
+{
+	return info[index];
+}
 void updateInfo(vector<Person>& v)
 {
 	cin.clear();
@@ -120,7 +130,7 @@ void updateInfo(vector<Person>& v)
 				cin.clear();
 				cin.ignore(256, '\n');
 			}
-			cout << "What information would you like to update?" << endl;
+			cout << "What information would you like to update?" << endl << endl;
 			cout << "\t1\t-\t Username" << endl;
 			cout << "\t2\t-\t Email (does not change newsletter subscription)" << endl;
 			cout << "\t3\t-\t Phone Number" << endl;
@@ -139,7 +149,7 @@ void updateInfo(vector<Person>& v)
 		cin.clear();
 		cin.ignore(256, '\n');
 		getline(cin, update);
-		cout << "Assigning it to index + 1 : " << choice + 1 << endl;
+		//cout << "Assigning it to index + 1 : " << choice + 1 << endl;
 		v[index].assignInfo(update, choice + 1);
 	} while (choice != 4);
 }
@@ -153,6 +163,10 @@ void checkInNew (vector<Person>& p, int index)
 	cout << "Please fill in the following information:" << endl;
 	cout << "First Name (enter \"Quit\" to exit to main menu): ";
 	getline (cin, fn);
+	if (fn == "Quit")
+	{
+		return;
+	}
 	cout << "Last Name: ";
 	getline (cin, ln);
 	bool identical = true;
@@ -191,7 +205,7 @@ void checkInNew (vector<Person>& p, int index)
 	p[v_size].assignEmail(em);
 	p[v_size].assignPhone(ph);
 	p[v_size].assignInfo("X", index);
-	cout << endl << endl << endl;
+	cout << string(40, '\n');
 	cout << "Thank you, " << p[v_size].findElement(0) << "! You're checked in!" << endl;
 }
 
@@ -217,7 +231,7 @@ void checkInReturn (vector <Person>& p, int index)
 			{
 
 				p[i].assignInfo("X", index);
-				cout << endl << endl << endl;
+				cout << string(40, '\n');
 				cout << "Thank you, " << p[i].findElement(0) << "! You're checked in!" << endl;
 				found = true;
 				return;
@@ -225,7 +239,7 @@ void checkInReturn (vector <Person>& p, int index)
 		}
 		if (!found)
 		{
-			cout << endl << endl << endl << "Username could not be found. Please try again." << endl << endl;
+			cout << endl << endl << endl << "ERROR: Username could not be found. Please try again." << endl << endl;
 		}
 	} while (!found);
 	return;
@@ -243,7 +257,7 @@ void DotSlash ()
 	cout << "*                                                                    *" << endl;
 	cout << "*   C   O   M   P   U   T   E   R         S   C   I   E   N   C   E  *" << endl;
 	cout << "**********************************************************************" << endl;
-	cout << endl << endl << endl << endl << endl;
+	cout << endl << endl;
 	}
 
 bool openFileRead (ifstream& file, const char* fname)
@@ -273,17 +287,12 @@ void studentType (vector<Person>& v, int index)
 		cout << "\n\n\n";
 		cout << setw (73) << setfill ('/') << "\n";
 		cout << setw (73) << setfill ('\\') << "\n";
-		cout << setw (73) << setfill ('/') << "\n";
-		cout << setw (73) << setfill ('\\') << "\n";
-
-		cout << "\n\n\n\n\n\n\n";
+		cout << "\n\n\n";
 		DotSlash ();
-		cout << "\n\n";
+		cout << "\n";
 		cout << setw (73) << setfill ('/') << "\n";
 		cout << setw (73) << setfill ('\\') << "\n";
-		cout << setw (73) << setfill ('/') << "\n";
-		cout << setw (73) << setfill ('\\') << "\n";
-		cout << "\n\n\n\n\n\n\n\n";
+		cout << "\n\n\n";
 		do
 		{
 		cout << "Please select an option" << endl;
@@ -314,20 +323,10 @@ void studentType (vector<Person>& v, int index)
 			return;
 		}
 	}
-	while (choice !="Q");}
-
-void Person::assignInfo (string pinfo, int position)
-{
-	info[position] = pinfo;
-}
-
- 
-string Person::findElement (int index)
-{
-	return info[index];
+	while (choice !="Q");
 }
 // takes information from the file and puts it into the roster vector
-bool initVector (ifstream& file, vector<Person>& v)
+void initVector (ifstream& file, vector<Person>& v)
 {
 	file.clear ();
 	file.seekg (0, ios::beg);
@@ -345,7 +344,7 @@ bool initVector (ifstream& file, vector<Person>& v)
 		v[0].assignEmail("Email Address");
 		v[0].assignPhone("Phone Number");
 
-		return true; //exits initVector and returns the value of true to the bool variable
+		return; //exits initVector and returns the value of true to the bool variable
 	}
 	else
 	{
@@ -409,16 +408,20 @@ bool initVector (ifstream& file, vector<Person>& v)
 			pos = 0;
 		}
 	}
-	return false;
+	return;
 }
 
 void exportClose (ofstream& file, vector<Person>& v)
 {
 	int v_size = v.size();
+	int v_info_size = v[0].countInfo ();
 	cout << "Exporting data to file..." << endl;
 	for (int i = 0; i < v_size; i++)
 	{
-		int v_info_size = v[i].countInfo ();
+		if (i!= 0)
+		{
+			file << "\n";
+		}
 		for (int j = 0; j < v_info_size; j++)
 		{
 			if (j!=0)
@@ -427,7 +430,6 @@ void exportClose (ofstream& file, vector<Person>& v)
 			}
 			file << v[i].findElement(j);
 		}
-		file << "\n";
 	}
 	cout << "Closing file..." << endl;
 	file.close();

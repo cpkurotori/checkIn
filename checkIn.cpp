@@ -92,9 +92,8 @@ int main (int argc, char* argv[])
 	}
 	vector<Person> roster;
 	roster.resize(1); //creates the first element for roster (i.e. the title element)
-	bool nofile;
 	cout << "Initializing vector for roster..." << endl;
-	nofile = initVector (infile, roster); //puts all the data in file into roster vector
+	initVector (infile, roster); //puts all the data in file into roster vector
 	//for (int i = 0; i < roster.size(); i++)
 	//{
 	//	cout << "Name element of roster[" << i << "] = " << roster[i].findElement (0) << endl;
@@ -107,15 +106,17 @@ int main (int argc, char* argv[])
 	bool identicalDay = false;
 	int date_index;
 	int roster_size = roster.size ();
-	for (int i = 0; i < roster.size(); i++) //tests if there is an identical date already in the title element; if there is return true and log the index of it into date_index, if not identicalDate will stay false
+	for (int i = 0; i < (roster[0].countInfo()); i++) //tests if there is an identical date already in the title element; if there is return true and log the index of it into date_index, if not identicalDate will stay false
 	{
-		if (roster[0].findElement(i) == date)
+		if ( date == roster[0].findElement(i))
 		{
+			cout << "an identical date was found..." << endl;
 			identicalDay = true;
 			date_index = i;
 			break;
 		}
 	}
+	cout << "Checking identicalDay: " << identicalDay << endl;
 	if (!identicalDay)
 	{
 		roster[0].push(); //adds element to info vector of title element
