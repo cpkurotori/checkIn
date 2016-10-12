@@ -130,12 +130,12 @@ void updateInfo(vector<Person>& v)
 				cin.clear();
 				cin.ignore(256, '\n');
 			}
-			cout << "What information would you like to update?" << endl << endl;
+			cout << endl << "What information would you like to update?" << endl << endl;
 			cout << "\t1\t-\t Username" << endl;
 			cout << "\t2\t-\t Email (does not change newsletter subscription)" << endl;
 			cout << "\t3\t-\t Phone Number" << endl;
 			cout << "\t4\t-\t Exit to main menu" << endl << endl;
-			cout << "Enter you choice: ";
+			cout << "Enter your choice: ";
 			cin >> choice;
 			if ((choice < 1) || (choice > 4) || cin.fail())
 			{
@@ -150,6 +150,37 @@ void updateInfo(vector<Person>& v)
 		cin.ignore(256, '\n');
 		getline(cin, update);
 		//cout << "Assigning it to index + 1 : " << choice + 1 << endl;
+		if (choice == 1) //for username checks to see if username is a duplicate
+		{
+			bool identical;
+			int k = 0;
+			do
+			{
+				identical = false;
+				if (k != 0)
+				{
+					cout << "New " << v[0].findElement(choice + 1) << " for " << v[index].findElement(0) << " " << v[index].findElement(1) << ":\t";
+					getline(cin, update);
+				}
+				int v_size = v.size();
+				//cout << "3" << endl;
+				for (int i = 0; i < v_size; i++)
+				{
+					string test;
+					//cout << "1" << endl;
+					test = v[i].findElement(2);
+					//cout << "2" << endl;
+					if (update == test)
+					{
+						cout << "ERROR: That username is already taken!" << endl << endl;
+						identical = true;
+						break;
+					}
+				}
+				k++;
+			} while (identical);
+		}
+
 		v[index].assignInfo(update, choice + 1);
 	} while (choice != 4);
 }
@@ -172,11 +203,11 @@ void checkInNew (vector<Person>& p, int index)
 	bool identical = true;
 	do
 	{
-	cout << "Username (choose a username - case sensitive): ";
-	cin >> us;
-	identical = true;
-	int p_size = p.size ();
-	//cout << "3" << endl;
+		cout << "Username (choose a username - case sensitive): ";
+		cin >> us;
+		identical = true;
+		int p_size = p.size ();
+		//cout << "3" << endl;
 		for (int i = 0; i < p_size; i++)
 		{
 			string test;
@@ -283,29 +314,30 @@ bool openFileWrite (ofstream& file, const char* fname)
 void studentType (vector<Person>& v, int index)
 {
 	string choice;
-	do{
-		cout << "\n\n\n";
-		cout << setw (73) << setfill ('/') << "\n";
-		cout << setw (73) << setfill ('\\') << "\n";
-		cout << "\n\n\n";
+	do
+	{
+		cout << "\n\n";
+		cout << "\n\n";
 		DotSlash ();
-		cout << "\n";
-		cout << setw (73) << setfill ('/') << "\n";
-		cout << setw (73) << setfill ('\\') << "\n";
-		cout << "\n\n\n";
+		cout << endl;
+		cout << "*****Welcome to Dot - Slash Computer Science Check-In!*****" << endl << endl;
+		cout << "If you have any questions, feel free to ask one of the ./Officers" << "\n";
+		cout << "\n\n";
 		do
 		{
-		cout << "Please select an option" << endl;
+		cout << "Please select an option" << endl << endl;
 		cout << "\t1 - New member check-in" << endl;
 		cout << "\t2 - Returning member check-in" << endl;
-		cout << "\t3 - Returning member update info" << endl << endl << endl << endl;
+		cout << "\t3 - Returning member update info" << endl;
+		cout << endl << endl << "Enter \"help\" for more information/help!" << endl << endl << endl;
+		cout << "What would you like to do? (Using the keyboard, enter the number of the option and press ENTER/RETURN):\t";
 		cin >> choice;
-		if (choice != "1"&& choice != "2" && choice != "3" && choice != "Q")
+		if (choice != "1"&& choice != "2" && choice != "3" && choice != "Q" && choice != "help")
 			{
 				cout << "ERROR: Please enter a valid option (1 or 2)" << endl << endl;
 			}
 		}
-		while (choice != "1" && choice != "2" && choice != "3" && choice != "Q");
+		while (choice != "1" && choice != "2" && choice != "3" && choice != "Q" && choice != "help");
 		if (choice == "1")
 		{
 			checkInNew (v, index);
@@ -317,6 +349,25 @@ void studentType (vector<Person>& v, int index)
 		else if (choice == "3")
 		{
 			updateInfo(v);
+		}
+		else if (choice == "help")
+		{
+			cout << string(40, '\n');
+			cout << "HELP MENU:" << endl << endl << endl;
+			cout << "Please enter the number corresponding to the option of your choice:" << endl << endl << endl;
+			cout << "\tIf you are a new member, enter '1' on the main menu and then enter your infomation " << endl << endl;
+			cout << "\tIf you are a returning member, enter '2' on the main menu and then enter your username to check in" << endl << endl;
+			cout << "\tIf you need to update your information, enter '3' on the main menu and then enter your First Name then Last Name" << endl;
+			cout << "\tOnce you've entered your name, you will be able to choose an option for whcih info you want to update." << endl << endl << endl;
+			cout << endl << "\tIf you are a returning member, but haven't used this check-in program before," << endl << "\tyou must first create a username. Please choose option 3, put in your first name," << endl << "\tthen your last name, and then choose to update" << endl;
+			cout << "\tyour username. You will use this username to check-in. Once you have chosen a " << endl << "\tusername, exit to the main menu, and check in as a returning member." << endl;
+			cout << endl << endl << endl;
+			cout << "Press ENTER to continue...";
+			string cont;
+			cin.clear();
+			cin.ignore(256, '\n');
+			getline(cin, cont);
+			cout << string(40, '\n');
 		}
 		else if (choice == "Q")
 		{
