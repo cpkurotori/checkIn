@@ -359,8 +359,8 @@ void studentType (vector<Person>& v, int index)
 			cout << "\tIf you are a returning member, enter '2' on the main menu and then enter your username to check in" << endl << endl;
 			cout << "\tIf you need to update your information, enter '3' on the main menu and then enter your First Name then Last Name" << endl;
 			cout << "\tOnce you've entered your name, you will be able to choose an option for whcih info you want to update." << endl << endl << endl;
-			cout << endl << "\tIf you are a returning member, but haven't used this check-in program before," << endl << "\tyou must first create a username. Please choose option 3, put in your first name," << endl << "\tthen your last name, and then choose to update" << endl;
-			cout << "\tyour username. You will use this username to check-in. Once you have chosen a " << endl << "\tusername, exit to the main menu, and check in as a returning member." << endl;
+			cout << endl << "\tIf you are a returning member, but haven't used this check-in program before," << endl << "\tyou must first create a username. Please choose option 3, put in your first name," << endl << "\tthen your last name, and then choose to update your username. " << endl;
+			cout << "\tYou will use this username to check-in. Once you have chosen a " << endl << "\tusername, exit to the main menu, and check in as a returning member." << endl;
 			cout << endl << endl << endl;
 			cout << "Press ENTER to continue...";
 			string cont;
